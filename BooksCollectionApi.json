@@ -1,0 +1,129 @@
+{
+    "info": {
+        "_postman_id": "ac6b6ac8-0204-416f-be3e-a8df5a9d4b5b",
+		"name": "Books-LaravelApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3094704"
+    },
+    "item": [
+        {
+            "name": "Get All Books",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8001/api/books",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8001",
+                    "path": [
+                        "api",
+                        "books"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Get Book by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8001/api/books/:id",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8001",
+                    "path": [
+                        "api",
+                        "books",
+                        ":id"
+                    ]
+                },
+                "description": "Replace :id with the actual book ID"
+            }
+        },
+        {
+            "name": "Create a Book",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"The Great Gatsby\",\n    \"author\": \"F. Scott Fitzgerald\",\n    \"description\": \"A novel set in the Jazz Age.\",\n    \"published_year\": 1925\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8001/api/books",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8001",
+                    "path": [
+                        "api",
+                        "books"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Update a Book",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"The Great Gatsby Updated\",\n    \"author\": \"F. Scott Fitzgerald\",\n    \"description\": \"An updated description.\",\n    \"published_year\": 1925\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8001/api/books/:id",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8001",
+                    "path": [
+                        "api",
+                        "books",
+                        ":id"
+                    ]
+                },
+                "description": "Replace :id with the actual book ID"
+            }
+        },
+        {
+            "name": "Delete a Book",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8001/api/books/:id",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8001",
+                    "path": [
+                        "api",
+                        "books",
+                        ":id"
+                    ]
+                },
+                "description": "Replace :id with the actual book ID"
+            }
+        }
+    ]
+}
