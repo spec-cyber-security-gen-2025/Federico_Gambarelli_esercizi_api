@@ -27,14 +27,19 @@ class BookController extends Controller
 
     public function show($id)
     {
-        $book = Book::find($id);
-
-        if (!$book) {
+        if (!$book = Book::find($id)) {
             return response()->json(['error' => 'Book not found'], 404);
         }
 
+        // SECURE
+        // $user = $book->user()->first();
+
+        // $userFiltered['name'] = $user->name;
+        // $userFiltered['email'] = $user->email;
+
         return response()->json([
             'data' => $book,
+            //'user' => $userFiltered,
             'links' => [
                 'self' => [
                     'href' => url("/api/books/{$id}"),
@@ -58,6 +63,8 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+        // UNSECURE
+        // Missing Validation
         $book = Book::create($request->all());
 
         return response()->json([
@@ -91,6 +98,9 @@ class BookController extends Controller
             return response()->json(['error' => 'Book not found'], 404);
         }
 
+        // UNSECURE
+        // Missing Validation
+        // Missing Authorization Check
         $book->update($request->all());
 
         return response()->json([
@@ -119,7 +129,8 @@ class BookController extends Controller
         if (!$book) {
             return response()->json(['error' => 'Book not found'], 404);
         }
-
+        // UNSECURE
+        // Missing Authorization Check
         $book->delete();
 
         return response()->json([

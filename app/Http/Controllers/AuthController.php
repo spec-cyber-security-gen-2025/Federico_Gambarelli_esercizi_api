@@ -15,18 +15,22 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
+            // SECURE
+            //'password' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-=+])[A-Za-z\d!@#$%^&*()_\-=+]{8,20}$/',  
             'password' => 'required',
+
             'c_password' => 'required|same:password',
         ]);
-   
-        if($validator->fails()){
-            // return $this->sendError('Validation Error.', $validator->errors());   
+
+        if($validator->fails()){  
             return response()->json(['error' =>  $validator->errors()], 403);    
         }
-   
+        
         $input = $request->all();
+
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
+        
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['name'] =  $user->name;
         
@@ -43,35 +47,121 @@ class AuthController extends Controller
                 ]
             ]
         ]);
-        //return $this->sendResponse($success, 'User register successfully.');
     }
    
     public function login(Request $request): JsonResponse
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-            
-            $user = Auth::user(); 
-            
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['name'] =  $user->name;
-            
-            return response()->json([
-                'data' => $success,
-                'links' => [
-                    'self' => [
-                        'href' => url('/api/login'),
-                        'method' => 'POST'
-                    ],
-                    'all_books' => [
-                        'href' => url('/api/books'),
-                        'method' => 'GET'
-                    ]
+        
+        if(!Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
+            return response()->json(['error' =>  ['Unauthorised']], 403);    
+        }
+        
+        $user = Auth::user(); 
+
+        $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
+        $success['name'] =  $user->name;
+        
+        return response()->json([
+            'data' => $success,
+            'links' => [
+                'self' => [
+                    'href' => url('/api/login'),
+                    'method' => 'POST'
+                ],
+                'all_books' => [
+                    'href' => url('/api/books'),
+                    'method' => 'GET'
                 ]
-            ]);
-            // return $this->sendResponse($success, 'User login successfully.');
-        } 
-        else{ 
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        } 
+            ]
+        ]);
+    }
+
+    // UNSECURE
+    // ONLY A DEMO, NOT WORKING
+    // API4:2023 Unrestricted Resource Consumption
+    public function passwordRecovery(Request $request){
+        if(!$user = User::where('email',$request->email)->first()){
+            return response()->json(['error' =>  ['Unauthorised']]);
+        }
+        // Use sms api to send confirmation code to user number
+        // $newCode = SMS::generateCode();
+        // $user->smsCode = $newCode;
+        // $user->save();
+        // SMS::send($user->phone, ['Please don't share this code: $user->smsCode']);
+        
+        return response()->json([
+            'data' => 'SMS sent to $user->phone',
+            'links' => [
+                'self' => [
+                    'href' => url('/api/login'),
+                    'method' => 'POST'
+                ],
+                'all_books' => [
+                    'href' => url('/api/books'),
+                    'method' => 'GET'
+                ]
+            ]
+        ]);
+    }
+
+    function getUserInfo($id) {
+
+        // SECURE
+        // if(!$user = Auth::user()){
+        //     return response()->json(['error' =>  ['Unauthorised']]);
+        // }
+
+        // UNSECURE
+        if(!$user = User::find($id)){
+            return response()->json(['error' =>  ['Unauthorised']]);
+        }
+        
+        return response()->json([
+            'data' => $user,
+            'links' => [
+                'self' => [
+                    'href' => url('/api/user'),
+                    'method' => 'GET'
+                ],
+                'all_books' => [
+                    'href' => url('/api/books'),
+                    'method' => 'GET'
+                ]
+            ]
+        ]);
+    }
+
+    public function updateEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation Error.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        // SECURE
+        // $user = Auth::user();
+
+        // UNSECURE
+        $user = User::findOrFail($request->user_id); // sent user_id in request body 
+
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Email updated successfully.',
+            'links' => [
+                'all_books' => [
+                    'href' => url('/api/books'),
+                    'method' => 'GET'
+                ]
+            ]
+        ]);
     }
 }
