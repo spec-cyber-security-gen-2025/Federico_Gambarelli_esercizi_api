@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -98,6 +99,14 @@ class BookController extends Controller
             return response()->json(['error' => 'Book not found'], 404);
         }
 
+        // SECURE
+        // if(!$user = Auth::user()){
+        //     return response()->json(['error' => 'Not autorised'], 401);
+        // }
+        // if($user->id != $book->user_id){
+        //     return response()->json(['error' => 'Not autorised'], 401);
+        // }
+
         // UNSECURE
         // Missing Validation
         // Missing Authorization Check
@@ -129,8 +138,15 @@ class BookController extends Controller
         if (!$book) {
             return response()->json(['error' => 'Book not found'], 404);
         }
+        // SECURE
+        // if(!$user = Auth::user()){
+        //     return response()->json(['error' => 'Not autorised'], 401);
+        // }
+        // if($user->id != $book->user_id){
+        //     return response()->json(['error' => 'Not autorised'], 401);
+        // }
+
         // UNSECURE
-        // Missing Authorization Check
         $book->delete();
 
         return response()->json([

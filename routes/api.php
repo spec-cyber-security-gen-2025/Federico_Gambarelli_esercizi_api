@@ -16,7 +16,7 @@ Route::controller(AuthController::class)->group(function(){
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/email-change',[AuthController::class,'updateEmail']);
     Route::get('/user/books',[BookController::class, 'showByUser']);
-    // Route::get('/user',[AuthController::class,'getUserInfo']); // SECURE
+    Route::get('/user',[AuthController::class,'getUserInfo']); // SECURE
     Route::get('/books', [BookController::class, 'index'])->middleware('throttle:5,1');
     Route::get('/books/{id}', [BookController::class, 'show']);
     Route::post('/books', [BookController::class, 'store']);
